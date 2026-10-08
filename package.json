@@ -1,0 +1,9 @@
+{
+  "name": "devprompt-lab",
+  "version": "0.1.0",
+  "private": false,
+  "description": "Open-source AI developer tool for prompt testing and model workflows.",
+  "type": "module",
+  "scripts": { "dev": "node src/server.js" },
+  "license": "MIT"
+}
