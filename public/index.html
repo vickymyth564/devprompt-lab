@@ -899,6 +899,390 @@
         gap: 16px;
       }
     }
+    /* ========================================
+   DEVPrompt LAB — PROFESSIONAL LIGHT THEME
+   ======================================== */
+
+:root {
+  --bg: #f7f8fc;
+  --surface: #ffffff;
+  --surface-2: #f0f2f8;
+  --border: #e5e7ef;
+  --text: #172033;
+  --muted: #667085;
+  --purple: #7057e8;
+  --blue: #4263eb;
+  --green: #168568;
+}
+
+/* Overall page */
+body {
+  background: #f7f8fc;
+  color: #172033;
+}
+
+/* Announcement bar */
+.announcement {
+  background: #f0edff;
+  color: #5542b8;
+  border-color: #e2dcff;
+}
+
+.announcement a {
+  color: #4333a3;
+}
+
+/* Navigation */
+.navbar {
+  background: rgba(255, 255, 255, 0.94);
+  border-color: #e5e7ef;
+}
+
+.nav-links {
+  color: #596579;
+}
+
+.nav-links a:hover {
+  color: #7057e8;
+}
+
+.logo-mark {
+  background: linear-gradient(135deg, #8974f7, #5c49d8);
+  box-shadow: 0 4px 15px rgba(112, 87, 232, 0.2);
+}
+
+.logo-name span {
+  color: #7057e8;
+}
+
+/* Buttons */
+.button {
+  background: #ffffff;
+  border-color: #dfe2ec;
+  color: #27334b;
+  box-shadow: 0 2px 5px rgba(24, 32, 51, 0.025);
+}
+
+.button:hover {
+  background: #f7f5ff;
+  border-color: #c9bfff;
+}
+
+.button.primary {
+  background: #7057e8;
+  color: #ffffff;
+  box-shadow: 0 5px 18px rgba(112, 87, 232, 0.18);
+}
+
+.button.primary:hover {
+  background: #5c43d1;
+}
+
+/* Hero section */
+.hero {
+  background:
+    radial-gradient(
+      ellipse at 50% 0%,
+      rgba(137, 116, 247, 0.12),
+      transparent 58%
+    ),
+    #f7f8fc;
+}
+
+.hero::before {
+  background: radial-gradient(
+    ellipse,
+    rgba(137, 116, 247, 0.12),
+    transparent 70%
+  );
+}
+
+.pill {
+  background: #ffffff;
+  border-color: #ded7ff;
+  color: #5846b8;
+  box-shadow: 0 3px 12px rgba(30, 30, 60, 0.025);
+}
+
+.hero-description {
+  color: #596579;
+}
+
+.hero-note {
+  color: #788196;
+}
+
+.gradient-text {
+  background-image: linear-gradient(
+    105deg,
+    #7057e8,
+    #596ce8 55%,
+    #2786bd
+  );
+}
+
+/* Product preview */
+.preview-glow {
+  background: rgba(112, 87, 232, 0.11);
+  filter: blur(75px);
+}
+
+.browser {
+  border-color: #dfe2ed;
+  background: #ffffff;
+  box-shadow:
+    0 25px 70px rgba(31, 41, 75, 0.10),
+    0 0 0 5px rgba(31, 41, 75, 0.015);
+}
+
+.browser-bar {
+  background: #f4f5fa;
+  border-color: #e5e7ef;
+}
+
+.browser-dots span {
+  background: #c6cada;
+}
+
+.browser-address {
+  color: #68738a;
+}
+
+.browser-status {
+  color: #168568;
+}
+
+.mock-sidebar {
+  background: #f8f8fc;
+  border-color: #e5e7ef;
+}
+
+.mock-brand {
+  color: #172033;
+}
+
+.mock-brand-icon {
+  background: #7057e8;
+  color: #ffffff;
+}
+
+.mock-nav {
+  color: #657087;
+}
+
+.mock-nav.active {
+  background: #eeeaff;
+  border-color: #dcd3ff;
+  color: #5b43ca;
+}
+
+.mock-main {
+  background: #ffffff;
+}
+
+.mock-label {
+  color: #69758b;
+}
+
+.mock-card {
+  background: #ffffff;
+  border-color: #e3e6ef;
+}
+
+.mock-card h4 {
+  color: #26334a;
+}
+
+.mock-field {
+  background: #f8f9fc;
+  border-color: #e3e6ef;
+  color: #6c7690;
+}
+
+.mock-field.tall {
+  color: #596579;
+}
+
+.mock-small-button {
+  background: #7057e8;
+  color: #ffffff;
+}
+
+.response-line {
+  background: #e7e9f1;
+}
+
+.response-line.purple {
+  background: linear-gradient(90deg, #8974f7, #e4dfff);
+}
+
+.preview-bottom {
+  color: #667085;
+}
+
+/* Section headings */
+.section {
+  border-color: #e6e8f0;
+}
+
+.section-kicker {
+  color: #7057e8;
+}
+
+.section-description {
+  color: #667085;
+}
+
+/* Feature cards */
+.feature-card {
+  background: #ffffff;
+  border-color: #e4e7ef;
+  box-shadow: 0 3px 12px rgba(25, 35, 65, 0.025);
+}
+
+.feature-card:hover {
+  border-color: #cfc4ff;
+  box-shadow: 0 12px 30px rgba(48, 43, 100, 0.07);
+}
+
+.feature-icon {
+  background: #f0edff;
+  border-color: #e3dcff;
+  color: #7057e8;
+}
+
+.feature-card h3 {
+  color: #202b40;
+}
+
+.feature-card p {
+  color: #667085;
+}
+
+/* Workflow */
+.workflow-copy > p {
+  color: #667085;
+}
+
+.step-number {
+  background: #f0edff;
+  border-color: #dfd7ff;
+  color: #7057e8;
+}
+
+.step h3 {
+  color: #26334a;
+}
+
+.step p {
+  color: #667085;
+}
+
+/* Code example */
+.code-window {
+  background: #ffffff;
+  border-color: #e0e4ed;
+  box-shadow: 0 20px 50px rgba(25, 35, 65, 0.07);
+}
+
+.code-header {
+  background: #f4f5fa;
+  border-color: #e5e7ef;
+  color: #596579;
+}
+
+.code-body {
+  background: #ffffff;
+  color: #334155;
+}
+
+.code-purple {
+  color: #7057e8;
+}
+
+.code-blue {
+  color: #2563a6;
+}
+
+.code-green {
+  color: #168568;
+}
+
+.code-muted {
+  color: #8a93a6;
+}
+
+/* Open-source panel */
+.open-source {
+  background:
+    radial-gradient(
+      ellipse at 100% 0%,
+      rgba(112, 87, 232, 0.09),
+      transparent 55%
+    ),
+    #ffffff;
+  border-color: #e0ddf4;
+}
+
+.open-source p {
+  color: #667085;
+}
+
+.github-symbol {
+  background: #f5f4ff;
+  border-color: #e4e0fa;
+  color: #7057e8;
+}
+
+/* Bottom CTA */
+.cta {
+  background:
+    radial-gradient(
+      ellipse at 50% 0%,
+      rgba(112, 87, 232, 0.07),
+      transparent 60%
+    );
+}
+
+.cta p {
+  color: #667085;
+}
+
+/* Footer */
+footer {
+  background: #ffffff;
+  border-color: #e5e7ef;
+}
+
+.footer-brand p {
+  color: #667085;
+}
+
+.footer-links {
+  color: #596579;
+}
+
+.footer-links a:hover {
+  color: #7057e8;
+}
+
+.footer-bottom {
+  border-color: #e5e7ef;
+  color: #7b8497;
+}
+
+/* Responsive polish */
+@media (max-width: 560px) {
+  .hero {
+    background:
+      radial-gradient(
+        ellipse at 50% 0%,
+        rgba(137, 116, 247, 0.10),
+        transparent 65%
+      ),
+      #f7f8fc;
+  }
+}
   </style>
 </head>
 
