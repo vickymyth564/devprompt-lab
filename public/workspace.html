@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>DevPrompt Lab — AI Developer Workspace</title>
+
+  <meta
+    name="description"
+    content="An open-source workspace for writing prompts, comparing AI outputs, and validating structured responses."
+  />
+
+  <link rel="stylesheet" href="/style.css" />
+
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #111a2e;
+      --panel-light: #172238;
+      --border: #293650;
+      --text: #f4f7ff;
+      --muted: #9baac3;
+      --accent: #8b7cff;
+      --accent-hover: #a196ff;
+      --green: #42d6a4;
+      --red: #ff7777;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, sans-serif;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    .app {
+      min-height: 100vh;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 18px 5%;
+      border-bottom: 1px solid var(--border);
+      background: #0e1527;
+    }
+
+    .brand {
+      color: var(--text);
+      font-size: 21px;
+      font-weight: 800;
+      letter-spacing: -0.7px;
+    }
+
+    .brand span {
+      color: var(--accent);
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 11px;
+      border: 1px solid #245c4d;
+      border-radius: 30px;
+      background: #102c27;
+      color: #7be7c1;
+      font-size: 12px;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+    }
+
+    .github-link {
+      padding: 9px 13px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 235px minmax(0, 1fr);
+      max-width: 1600px;
+      min-height: calc(100vh - 65px);
+      margin: auto;
+    }
+
+    aside {
+      padding: 25px 17px;
+      border-right: 1px solid var(--border);
+      background: #0e1527;
+    }
+
+    .side-label {
+      margin: 0 0 12px 10px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+    }
+
+    .nav-item {
+      display: block;
+      width: 100%;
+      margin-bottom: 6px;
+      padding: 12px;
+      border: 1px solid transparent;
+      border-radius: 9px;
+      background: transparent;
+      color: #c7d2e5;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    .nav-item.active {
+      border-color: #39345e;
+      background: #211e3b;
+      color: #c1b8ff;
+    }
+
+    .sidebar-card {
+      margin-top: 32px;
+      padding: 15px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--panel);
+    }
+
+    .sidebar-card h3 {
+      margin: 0 0 8px;
+      font-size: 14px;
+    }
+
+    .sidebar-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .main {
+      min-width: 0;
+      padding: 35px clamp(18px, 4vw, 55px);
+    }
+
+    .page-heading {
+      margin-bottom: 28px;
+    }
+
+    .eyebrow {
+      margin: 0 0 9px;
+      color: #b4aaff;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.7px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(27px, 3vw, 38px);
+      letter-spacing: -1.2px;
+    }
+
+    .subtitle {
+      max-width: 680px;
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .notice {
+      margin-bottom: 22px;
+      padding: 13px 15px;
+      border: 1px solid #574b2a;
+      border-radius: 10px;
+      background: #272316;
+      color: #f3d68d;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 245px;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .panel {
+      min-width: 0;
+      margin-bottom: 20px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--panel);
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .panel-header h2 {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    .panel-content {
+      padding: 18px;
+    }
+
+    .label {
+      display: block;
+      margin-bottom: 8px;
+      color: #d7e0f0;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      outline: none;
+      background: #0b1222;
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: var(--accent);
+    }
+
+    textarea {
+      min-height: 170px;
+      resize: vertical;
+    }
+
+    .small-input {
+      margin-bottom: 16px;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 9px;
+      margin-top: 13px;
+    }
+
+    .btn {
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--panel-light);
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .btn.primary {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn:hover {
+      filter: brightness(1.15);
+    }
+
+    .btn.danger {
+      color: #ffaaaa;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    .saved-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .saved-item {
+      padding: 11px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: #0b1222;
+    }
+
+    .saved-title {
+      overflow-wrap: anywhere;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .saved-date {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .saved-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 9px;
+    }
+
+    .saved-actions button {
+      padding: 6px 8px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--panel-light);
+      color: var(--text);
+      font-size: 10px;
+    }
+
+    .empty {
+      padding: 12px 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .compare-grid textarea {
+      min-height: 145px;
+    }
+
+    .output-title {
+      display: block;
+      margin-bottom: 9px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .result {
+      margin-top: 13px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+    }
+
+    .result.success {
+      border-color: #245c4d;
+      color: #7be7c1;
+    }
+
+    .result.error {
+      border-color: #743838;
+      color: #ffaaaa;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .footer {
+      padding: 24px 0 5px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.8;
+    }
+
+    .footer a {
+      color: #b4aaff;
+    }
+
+    @media (max-width: 950px) {
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+
+      .layout {
+        grid-template-columns: 190px minmax(0, 1fr);
+      }
+    }
+
+    @media (max-width: 650px) {
+      .layout {
+        display: block;
+      }
+
+      aside {
+        display: none;
+      }
+
+      .topbar {
+        padding: 15px;
+      }
+
+      .badge {
+        display: none;
+      }
+
+      .main {
+        padding: 25px 15px;
+      }
+
+      .compare-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .panel-header {
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <header class="topbar">
+      <a class="brand" href="/">DevPrompt<span> Lab</span></a>
+
+      <div class="top-actions">
+        <span class="badge">
+          <span class="dot"></span>
+          Local workspace
+        </span>
+
+        <a
+          class="github-link"
+          href="https://github.com/vickymyth564/devprompt-lab"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          GitHub ↗
+        </a>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside>
+        <p class="side-label">Workspace</p>
+
+        <button class="nav-item active" data-view="workspace">
+          ✦ Prompt workspace
+        </button>
+
+        <button class="nav-item" data-view="compare">
+          ⇄ Output comparison
+        </button>
+
+        <button class="nav-item" data-view="json">
+          { } JSON validator
+        </button>
+
+        <button class="nav-item" data-view="saved">
+          ▤ Saved prompts
+        </button>
+
+        <div class="sidebar-card">
+          <h3>Development mode</h3>
+          <p>
+            Write prompts, save versions, compare responses, and validate
+            JSON without API credits.
+          </p>
+        </div>
+
+        <div class="sidebar-card">
+          <h3>Claude integration</h3>
+          <p>
+            Direct Claude API calls are not enabled yet. No API key is
+            required for the current features.
+          </p>
+        </div>
+      </aside>
+
+      <main class="main">
+        <section class="page-heading">
+          <p class="eyebrow">AI DEVELOPER WORKSPACE</p>
+          <h1>Build better prompts.</h1>
+          <p class="subtitle">
+            Write prompts, keep useful versions, compare AI responses,
+            and check structured JSON outputs in one workspace.
+          </p>
+        </section>
+
+        <div class="notice">
+          <strong>Prototype mode:</strong>
+          This version does not call an AI model. Enter responses from
+          your preferred AI tool manually to compare them. Your saved
+          prompts are stored in this browser.
+        </div>
+
+        <!-- PROMPT WORKSPACE -->
+        <section id="workspace-view" class="view">
+          <div class="workspace">
+            <div>
+              <section class="panel">
+                <div class="panel-header">
+                  <h2>✦ Prompt editor</h2>
+                  <span class="hint" id="prompt-count">0 characters</span>
+                </div>
+
+                <div class="panel-content">
+                  <label class="label" for="prompt-name">Prompt name</label>
+                  <input
+                    class="small-input"
+                    id="prompt-name"
+                    type="text"
+                    maxlength="100"
+                    placeholder="e.g. Code review assistant"
+                  />
+
+                  <label class="label" for="prompt-text">
+                    Write your prompt
+                  </label>
+
+                  <textarea
+                    id="prompt-text"
+                    placeholder="You are an expert developer. Review the following code and identify bugs, security issues, and improvements..."
+                  ></textarea>
+
+                  <div class="row">
+                    <button class="btn primary" id="save-prompt">
+                      Save prompt
+                    </button>
+
+                    <button class="btn" id="copy-prompt">
+                      Copy prompt
+                    </button>
+
+                    <button class="btn" id="clear-prompt">
+                      Clear
+                    </button>
+                  </div>
+
+                  <p class="hint" id="prompt-status" aria-live="polite">
+                    Your prompts stay in this browser until you delete them
+                    or clear the browser's stored site data.
+                  </p>
+                </div>
+              </section>
+
+              <section class="panel">
+                <div class="panel-header">
+                  <h2>⇄ Compare AI outputs</h2>
+                  <button class="btn" data-open="compare">Open comparison</button>
+                </div>
+
+                <div class="panel-content">
+                  <div class="compare-grid">
+                    <div>
+                      <label class="output-title" for="output-a">
+                        Response A
+                      </label>
+                      <textarea
+                        id="output-a"
+                        placeholder="Paste the first AI response here..."
+                      ></textarea>
+                    </div>
+
+                    <div>
+                      <label class="output-title" for="output-b">
+                        Response B
+                      </label>
+                      <textarea
+                        id="output-b"
+                        placeholder="Paste the second AI response here..."
+                      ></textarea>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <button class="btn primary" id="compare-button">
+                      Compare responses
+                    </button>
+                    <button class="btn" id="clear-outputs">
+                      Clear responses
+                    </button>
+                  </div>
+
+                  <div id="compare-result" class="result hidden" aria-live="polite"></div>
+                </div>
+              </section>
+
+              <section class="panel">
+                <div class="panel-header">
+                  <h2>{ } JSON validator</h2>
+                  <button class="btn" data-open="json">Open validator</button>
+                </div>
+
+                <div class="panel-content">
+                  <label class="label" for="json-input">
+                    Paste JSON to validate
+                  </label>
+
+                  <textarea
+                    id="json-input"
+                    placeholder='{"name":"DevPrompt Lab","status":"prototype"}'
+                  ></textarea>
+
+                  <div class="row">
+                    <button class="btn primary" id="validate-json">
+                      Validate JSON
+                    </button>
+                    <button class="btn" id="format-json">
+                      Format JSON
+                    </button>
+                  </div>
+
+                  <div id="json-result" class="result hidden" aria-live="polite"></div>
+                </div>
+              </section>
+            </div>
+
+            <div>
+              <section class="panel">
+                <div class="panel-header">
+                  <h2>▤ Saved prompts</h2>
+                  <span class="hint" id="saved-count">0 saved</span>
+                </div>
+
+                <div class="panel-content">
+                  <p class="hint">
+                    Save useful prompts and load them whenever you need them.
+                  </p>
+
+                  <div id="saved-list" class="saved-list"></div>
+                </div>
+              </section>
+
+              <section class="panel">
+                <div class="panel-header">
+                  <h2>Quick guide</h2>
+                </div>
+
+                <div class="panel-content">
+                  <p class="hint">
+                    <strong>1. Write</strong><br />
+                    Create a prompt and give it a name.
+                  </p>
+
+                  <p class="hint">
+                    <strong>2. Save</strong><br />
+                    Keep it in your browser for later.
+                  </p>
+
+                  <p class="hint">
+                    <strong>3. Test</strong><br />
+                    Copy it into an AI tool and collect its response.
+                  </p>
+
+                  <p class="hint">
+                    <strong>4. Compare</strong><br />
+                    Paste two responses to compare length and content.
+                  </p>
+
+                  <p class="hint">
+                    <strong>5. Validate</strong><br />
+                    Check whether a response is valid JSON.
+                  </p>
+                </div>
+              </section>
+
+              <section class="panel">
+                <div class="panel-header">
+                  <h2>Project</h2>
+                </div>
+
+                <div class="panel-content">
+                  <p class="hint">
+                    DevPrompt Lab is an open-source developer-tools project.
+                  </p>
+
+                  <p class="hint">
+                    <a href="mailto:hello@devpromptlab.tech">
+                      Contact the project ↗
+                    </a>
+                  </p>
+                </div>
+              </section>
+            </div>
+          </div>
+        </section>
+
+        <!-- COMPARISON VIEW -->
+        <section id="compare-view" class="view hidden">
+          <section class="panel">
+            <div class="panel-header">
+              <h2>Output comparison</h2>
+            </div>
+
+            <div class="panel-content">
+              <p class="hint">
+                Paste two AI responses below. The comparison shows character
+                count, word count, and whether their text is identical.
+                It does not judge which response is more accurate.
+              </p>
+
+              <div class="compare-grid">
+                <div>
+                  <label class="output-title" for="output-a">
+                    Response A
+                  </label>
+                  <textarea id="output-a-duplicate" placeholder="Paste response A..."></textarea>
+                </div>
+
+                <div>
+                  <label class="output-title" for="output-b">
+                    Response B
+                  </label>
+                  <textarea id="output-b-duplicate" placeholder="Paste response B..."></textarea>
+                </div>
+              </div>
+
+              <div class="row">
+                <button class="btn primary" id="compare-duplicate">
+                  Compare responses
+                </button>
+              </div>
+
+              <div id="compare-result-duplicate" class="result hidden"></div>
+            </div>
+          </section>
+        </section>
+
+        <!-- JSON VIEW -->
+        <section id="json-view" class="view hidden">
+          <section class="panel">
+            <div class="panel-header">
+              <h2>JSON validator and formatter</h2>
+            </div>
+
+            <div class="panel-content">
+              <label class="label" for="json-input-duplicate">
+                JSON input
+              </label>
+
+              <textarea
+                id="json-input-duplicate"
+                placeholder='{"message":"Hello world"}'
+              ></textarea>
+
+              <div class="row">
+                <button class="btn primary" id="validate-json-duplicate">
+                  Validate JSON
+                </button>
+                <button class="btn" id="format-json-duplicate">
+                  Format JSON
+                </button>
+              </div>
+
+              <div id="json-result-duplicate" class="result hidden"></div>
+            </div>
+          </section>
+        </section>
+
+        <!-- SAVED PROMPTS VIEW -->
+        <section id="saved-view" class="view hidden">
+          <section class="panel">
+            <div class="panel-header">
+              <h2>Your saved prompts</h2>
+            </div>
+
+            <div class="panel-content">
+              <div id="saved-list-duplicate" class="saved-list"></div>
+            </div>
+          </section>
+        </section>
+
+        <footer class="footer">
+          <p>
+            DevPrompt Lab · Open source AI developer tooling
+          </p>
+          <p>
+            <a href="https://github.com/vickymyth564/devprompt-lab"
+               target="_blank" rel="noopener noreferrer">
+              GitHub repository
+            </a>
+            ·
+            <a href="mailto:hello@devpromptlab.tech">Contact</a>
+          </p>
+          <p>
+            Prototype version. AI API integration is not enabled.
+          </p>
+        </footer>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "devprompt-lab-saved-prompts-v1";
+
+    const get = (id) => document.getElementById(id);
+
+    const promptName = get("prompt-name");
+    const promptText = get("prompt-text");
+    const promptCount = get("prompt-count");
+    const promptStatus = get("prompt-status");
+
+    function readPrompts() {
+      try {
+        const value = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+        return Array.isArray(value) ? value : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function writePrompts(prompts) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(prompts));
+        return true;
+      } catch {
+        promptStatus.textContent =
+          "Could not save prompts. Check your browser's storage settings.";
+        return false;
+      }
+    }
+
+    function updatePromptCount() {
+      promptCount.textContent =
+        promptText.value.length.toLocaleString() + " characters";
+    }
+
+    promptText.addEventListener("input", updatePromptCount);
+
+    function saveCurrentPrompt() {
+      const text = promptText.value.trim();
+      const name = promptName.value.trim() || "Untitled prompt";
+
+      if (!text) {
+        promptStatus.textContent = "Write a prompt before saving.";
+        promptText.focus();
+        return;
+      }
+
+      const prompts = readPrompts();
+
+      prompts.unshift({
+        id: crypto.randomUUID
+          ? crypto.randomUUID()
+          : String(Date.now()) + Math.random(),
+        name,
+        text,
+        updatedAt: new Date().toISOString()
+      });
+
+      if (writePrompts(prompts)) {
+        renderSavedPrompts();
+        promptStatus.textContent = "Prompt saved successfully in this browser.";
+      }
+    }
+
+    function loadPrompt(id) {
+      const prompt = readPrompts().find((item) => item.id === id);
+      if (!prompt) return;
+
+      promptName.value = prompt.name;
+      promptText.value = prompt.text;
+      updatePromptCount();
+
+      promptStatus.textContent = "Loaded: " + prompt.name;
+
+      showView("workspace");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function deletePrompt(id) {
+      const prompts = readPrompts().filter((item) => item.id !== id);
+
+      if (writePrompts(prompts)) {
+        renderSavedPrompts();
+        promptStatus.textContent = "Saved prompt deleted.";
+      }
+    }
+
+    function makeSavedItem(prompt) {
+      const article = document.createElement("article");
+      article.className = "saved-item";
+
+      const title = document.createElement("div");
+      title.className = "saved-title";
+      title.textContent = prompt.name;
+
+      const date = document.createElement("div");
+      date.className = "saved-date";
+      date.textContent = new Date(prompt.updatedAt).toLocaleDateString();
+
+      const actions = document.createElement("div");
+      actions.className = "saved-actions";
+
+      const load = document.createElement("button");
+      load.textContent = "Load";
+      load.addEventListener("click", () => loadPrompt(prompt.id));
+
+      const remove = document.createElement("button");
+      remove.textContent = "Delete";
+      remove.addEventListener("click", () => {
+        if (confirm("Delete this saved prompt?")) {
+          deletePrompt(prompt.id);
+        }
+      });
+
+      actions.append(load, remove);
+      article.append(title, date, actions);
+
+      return article;
+    }
+
+    function fillSavedList(element) {
+      element.replaceChildren();
+
+      const prompts = readPrompts();
+
+      if (!prompts.length) {
+        const empty = document.createElement("p");
+        empty.className = "empty";
+        empty.textContent =
+          "No saved prompts yet. Write a prompt and select Save prompt.";
+        element.appendChild(empty);
+        return;
+      }
+
+      prompts.forEach((prompt) => {
+        element.appendChild(makeSavedItem(prompt));
+      });
+    }
+
+    function renderSavedPrompts() {
+      const prompts = readPrompts();
+
+      get("saved-count").textContent =
+        prompts.length + (prompts.length === 1 ? " saved" : " saved");
+
+      fillSavedList(get("saved-list"));
+      fillSavedList(get("saved-list-duplicate"));
+    }
+
+    function showView(name) {
+      document.querySelectorAll(".view").forEach((view) => {
+        view.classList.add("hidden");
+      });
+
+      const target = get(name + "-view");
+      if (target) target.classList.remove("hidden");
+
+      document.querySelectorAll(".nav-item").forEach((button) => {
+        button.classList.toggle("active", button.dataset.view === name);
+      });
+    }
+
+    document.querySelectorAll(".nav-item").forEach((button) => {
+      button.addEventListener("click", () => showView(button.dataset.view));
+    });
+
+    document.querySelectorAll("[data-open]").forEach((button) => {
+      button.addEventListener("click", () => showView(button.dataset.open));
+    });
+
+    get("save-prompt").addEventListener("click", saveCurrentPrompt);
+
+    get("copy-prompt").addEventListener("click", async () => {
+      if (!promptText.value) {
+        promptStatus.textContent = "Write a prompt before copying.";
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(promptText.value);
+        promptStatus.textContent = "Prompt copied to clipboard.";
+      } catch {
+        promptText.focus();
+        promptText.select();
+        promptStatus.textContent =
+          "Select the prompt and copy it using Ctrl+C.";
+      }
+    });
+
+    get("clear-prompt").addEventListener("click", () => {
+      promptName.value = "";
+      promptText.value = "";
+      updatePromptCount();
+      promptStatus.textContent = "Editor cleared. Saved prompts are unchanged.";
+    });
+
+    function wordCount(text) {
+      const trimmed = text.trim();
+      return trimmed ? trimmed.split(/\s+/).length : 0;
+    }
+
+    function compareResponses(a, b, resultElement) {
+      const left = a.trim();
+      const right = b.trim();
+
+      resultElement.classList.remove("hidden", "success", "error");
+
+      if (!left || !right) {
+        resultElement.classList.add("error");
+        resultElement.textContent =
+          "Enter both responses before comparing.";
+        return;
+      }
+
+      resultElement.classList.add("success");
+
+      resultElement.textContent =
+        "Response A: " + left.length.toLocaleString() + " characters, " +
+        wordCount(left).toLocaleString() + " words. " +
+        "Response B: " + right.length.toLocaleString() + " characters, " +
+        wordCount(right).toLocaleString() + " words. " +
+        "Text comparison: " +
+        (left === right ? "The responses are identical." : "The responses differ.");
+    }
+
+    get("compare-button").addEventListener("click", () => {
+      compareResponses(
+        get("output-a").value,
+        get("output-b").value,
+        get("compare-result")
+      );
+    });
+
+    get("compare-duplicate").addEventListener("click", () => {
+      compareResponses(
+        get("output-a-duplicate").value,
+        get("output-b-duplicate").value,
+        get("compare-result-duplicate")
+      );
+    });
+
+    get("clear-outputs").addEventListener("click", () => {
+      get("output-a").value = "";
+      get("output-b").value = "";
+      get("compare-result").classList.add("hidden");
+    });
+
+    function validateJSON(input, result, format) {
+      result.classList.remove("hidden", "success", "error");
+
+      try {
+        const parsed = JSON.parse(input.value);
+
+        result.classList.add("success");
+        result.textContent = "Valid JSON.";
+
+        if (format) {
+          input.value = JSON.stringify(parsed, null, 2);
+          result.textContent = "Valid JSON. Formatting applied.";
+        }
+      } catch (error) {
+        result.classList.add("error");
+        result.textContent = "Invalid JSON: " + error.message;
+      }
+    }
+
+    get("validate-json").addEventListener("click", () => {
+      validateJSON(get("json-input"), get("json-result"), false);
+    });
+
+    get("format-json").addEventListener("click", () => {
+      validateJSON(get("json-input"), get("json-result"), true);
+    });
+
+    get("validate-json-duplicate").addEventListener("click", () => {
+      validateJSON(
+        get("json-input-duplicate"),
+        get("json-result-duplicate"),
+        false
+      );
+    });
+
+    get("format-json-duplicate").addEventListener("click", () => {
+      validateJSON(
+        get("json-input-duplicate"),
+        get("json-result-duplicate"),
+        true
+      );
+    });
+
+    renderSavedPrompts();
+    updatePromptCount();
+  </script>
+</body>
+</html>
